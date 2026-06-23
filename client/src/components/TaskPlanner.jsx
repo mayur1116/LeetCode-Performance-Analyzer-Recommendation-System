@@ -6,6 +6,7 @@ function TaskPlanner({ username }) {
   const [newTaskText, setNewTaskText] = useState("");
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -29,12 +30,14 @@ function TaskPlanner({ username }) {
     if (!text) return;
 
     setAdding(true);
+    setError("");
     try {
       const response = await axios.post("/api/tasks", { username, text });
       setTasks([response.data, ...tasks]);
       setNewTaskText("");
     } catch (err) {
       console.error("Error adding task:", err.message);
+      setError("Database error. Please check your MongoDB connection.");
     } finally {
       setAdding(false);
     }
@@ -81,6 +84,8 @@ function TaskPlanner({ username }) {
           {adding ? "Adding..." : "Add"}
         </button>
       </form>
+
+      {error && <p style={{ color: "var(--hard)", fontSize: "12px", marginBottom: "10px" }}>{error}</p>}
 
       {/* Summary */}
       {tasks.length > 0 && (
