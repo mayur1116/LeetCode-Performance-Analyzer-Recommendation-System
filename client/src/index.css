@@ -144,10 +144,16 @@ body {
   background: var(--card);
   color: var(--text);
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:hover {
+  border-color: var(--text-muted);
 }
 
 .search-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .search-input::placeholder {
@@ -239,18 +245,20 @@ body.dark .error-message {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
+}
+
 .hover-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .hover-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-color: var(--border);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+  border-color: var(--accent);
 }
 
 body.dark .hover-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
 .card-title {
@@ -569,10 +577,16 @@ body.dark .hover-card:hover {
   background: var(--bg);
   color: var(--text);
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-input:hover {
+  border-color: var(--text-muted);
 }
 
 .task-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .task-input::placeholder {
