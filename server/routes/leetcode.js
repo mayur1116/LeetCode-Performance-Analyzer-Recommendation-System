@@ -62,8 +62,8 @@ router.get("/:username", async (req, res) => {
 
   try {
     // Make all API calls at the same time to save time.
-    // Using 30s timeout because the external API can be slow on cold starts.
-    const TIMEOUT = 30000;
+    // Using 60s timeout because the external free-tier API can sometimes take 45-50s to cold start.
+    const TIMEOUT = 60000;
     const [profileRes, solvedRes, skillRes, contestRes, historyRes] = await Promise.all([
       fetchWithRetry(`${BASE_URL}/${username}`, { timeout: TIMEOUT }),
       fetchWithRetry(`${BASE_URL}/${username}/solved`, { timeout: TIMEOUT }),
@@ -219,11 +219,14 @@ router.get("/:username", async (req, res) => {
       return res.status(404).json({ error: "LeetCode user not found. Please check the username." });
     }
 
-    console.error("Error fetching LeetCode data:", error.message);
+    let debugMessage = error.message;
+    if (error.response) {
+      debugMessage += ` (Status: ${error.response.status})`;
+    }
+
+    console.error("Error fetching LeetCode data:", debugMessage);
     res.status(500).json({
-      error:
-        "Could not fetch data. The LeetCode API might be waking up from sleep (Render free tier). " +
-        "Please wait 10 seconds and try again.",
+      error: `Could not fetch data. Error: ${debugMessage}. The LeetCode API is likely waking up from sleep or experiencing high traffic. Please wait 15 seconds and try again.`,
     });
   }
 });
