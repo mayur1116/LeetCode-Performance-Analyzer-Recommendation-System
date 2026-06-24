@@ -39,12 +39,15 @@ async function fetchWithRetry(url, options) {
   try {
     return await axios.get(url, options);
   } catch (err) {
-    // If it timed out or was a network error, wait 3 seconds and try one more time
+    // If it timed out, was a network error, or the external Render API is waking up (502/503/504)
     const isTimeout = err.code === "ECONNABORTED" || err.message.includes("timeout");
     const isNetworkErr = err.code === "ECONNRESET" || err.code === "ENOTFOUND";
-    if (isTimeout || isNetworkErr) {
-      console.log(`Retrying ${url} after timeout...`);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+    const isServerError = err.response && [502, 503, 504].includes(err.response.status);
+
+    if (isTimeout || isNetworkErr || isServerError) {
+      console.log(`Retrying ${url} after error...`);
+      // Wait 5 seconds to give the free tier API time to finish booting
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return await axios.get(url, options);
     }
     throw err; // for 404s or other errors, don't retry
